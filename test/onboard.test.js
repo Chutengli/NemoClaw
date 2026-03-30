@@ -285,7 +285,7 @@ describe("onboard helpers", () => {
       inferenceBaseUrl: "https://inference.local/v1",
       inferenceApi: "openai-completions",
       inferenceCompat: {
-        supportsStore: false,
+        supportsStore: true,
       },
     });
   });
@@ -298,6 +298,49 @@ describe("onboard helpers", () => {
       inferenceApi: "openai-responses",
       inferenceCompat: null,
     });
+  });
+
+  it("marks OpenAI gpt-5 models as supportsStore false even with a Responses API override", () => {
+    assert.deepEqual(
+      getSandboxInferenceConfig("gpt-5.4", "openai-api", "openai-responses"),
+      {
+        providerKey: "openai",
+        primaryModelRef: "openai/gpt-5.4",
+        inferenceBaseUrl: "https://inference.local/v1",
+        inferenceApi: "openai-responses",
+        inferenceCompat: {
+          supportsStore: true,
+        },
+      }
+    );
+  });
+
+  it("marks OpenAI gpt-5 models as supportsStore false", () => {
+    assert.deepEqual(
+      getSandboxInferenceConfig("gpt-5-mini", "openai-api", "openai-responses"),
+      {
+        providerKey: "openai",
+        primaryModelRef: "openai/gpt-5-mini",
+        inferenceBaseUrl: "https://inference.local/v1",
+        inferenceApi: "openai-responses",
+        inferenceCompat: {
+          supportsStore: true,
+        },
+      }
+    );
+  });
+
+  it("leaves non-gpt-5 OpenAI models unchanged", () => {
+    assert.deepEqual(
+      getSandboxInferenceConfig("gpt-4.1-mini", "openai-api", "openai-responses"),
+      {
+        providerKey: "openai",
+        primaryModelRef: "openai/gpt-4.1-mini",
+        inferenceBaseUrl: "https://inference.local/v1",
+        inferenceApi: "openai-responses",
+        inferenceCompat: null,
+      }
+    );
   });
 
   it("pins the gateway image to the installed OpenShell release version", () => {
