@@ -143,6 +143,24 @@ describe("shell runtime helpers", () => {
     expect(result.stdout.trim()).toBe("10.0.0.2");
   });
 
+  it("prefers IPv4 nameservers over IPv6 for CoreDNS upstreams", () => {
+    const result = runShell(
+      `source "${RUNTIME_SH}"; resolve_coredns_upstream $'nameserver 2001:db8::53\\nnameserver 10.0.0.2' $'nameserver 1.1.1.1' docker`,
+    );
+
+    expect(result.status).toBe(0);
+    expect(result.stdout.trim()).toBe("10.0.0.2");
+  });
+
+  it("falls back to IPv6 only when no IPv4 nameserver exists", () => {
+    const result = runShell(
+      `source "${RUNTIME_SH}"; resolve_coredns_upstream $'nameserver 2001:db8::53' $'nameserver 2001:db8::54' docker`,
+    );
+
+    expect(result.status).toBe(0);
+    expect(result.stdout.trim()).toBe("2001:db8::53");
+  });
+
   it("prefers the container nameserver when it is not loopback", () => {
     const result = runShell(
       `source "${RUNTIME_SH}"; resolve_coredns_upstream $'nameserver 10.0.0.2' $'nameserver 1.1.1.1' colima`,

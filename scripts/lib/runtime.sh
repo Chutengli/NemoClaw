@@ -126,6 +126,17 @@ first_non_loopback_nameserver() {
     | awk '$1 == "nameserver" && $2 !~ /^127\./ { print $2; exit }'
 }
 
+first_non_loopback_ipv4_nameserver() {
+  local resolv_conf="${1:-}"
+
+  if [ -z "$resolv_conf" ]; then
+    return 1
+  fi
+
+  printf '%s\n' "$resolv_conf" \
+    | awk '$1 == "nameserver" && $2 ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/ && $2 !~ /^127\./ { print $2; exit }'
+}
+
 get_colima_vm_nameserver() {
   if ! command -v colima >/dev/null 2>&1; then
     return 1
@@ -143,6 +154,12 @@ resolve_coredns_upstream() {
   local runtime="${3:-unknown}"
   local nameserver=""
 
+  nameserver="$(first_non_loopback_ipv4_nameserver "$container_resolv_conf" || true)"
+  if [ -n "$nameserver" ]; then
+    printf '%s\n' "$nameserver"
+    return 0
+  fi
+
   nameserver="$(first_non_loopback_nameserver "$container_resolv_conf" || true)"
   if [ -n "$nameserver" ]; then
     printf '%s\n' "$nameserver"
@@ -155,6 +172,12 @@ resolve_coredns_upstream() {
       printf '%s\n' "$nameserver"
       return 0
     fi
+  fi
+
+  nameserver="$(first_non_loopback_ipv4_nameserver "$host_resolv_conf" || true)"
+  if [ -n "$nameserver" ]; then
+    printf '%s\n' "$nameserver"
+    return 0
   fi
 
   nameserver="$(first_non_loopback_nameserver "$host_resolv_conf" || true)"
