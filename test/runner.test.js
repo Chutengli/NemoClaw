@@ -742,5 +742,11 @@ describe("regression guards", () => {
       expect(src.includes("validateName(SANDBOX")).toBeTruthy();
       expect(!src.includes("execSync")).toBeTruthy();
     });
+
+    it("discord bridge validates SANDBOX_NAME on startup", () => {
+      const src = fs.readFileSync(path.join(import.meta.dirname, "..", "scripts", "discord-bridge.js"), "utf-8");
+      expect(src.includes("validateName(SANDBOX")).toBeTruthy();
+      expect(!src.includes("execSync")).toBeTruthy();
+    });
   });
 });
