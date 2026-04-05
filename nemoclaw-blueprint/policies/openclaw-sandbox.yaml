@@ -171,6 +171,101 @@ network_policies:
       - { path: /usr/local/bin/npm }
       - { path: /usr/local/bin/node }
 
+  # Google APIs and downloads — used by OAuth flows and direct downloads
+  # from the sandbox (for example via curl, python, or node tooling).
+  google:
+    name: google
+    endpoints:
+      - host: dl.google.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+      - host: www.googleapis.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
+      - host: oauth2.googleapis.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
+      - host: gmail.googleapis.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
+      - host: meet.googleapis.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
+      - host: serviceusage.googleapis.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
+      - host: cloudresourcemanager.googleapis.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
+    binaries:
+      - { path: /usr/bin/curl }
+      - { path: /usr/bin/python3* }
+      - { path: /usr/local/bin/node* }
+      - { path: /usr/local/bin/python3* }
+
+  # Developer tooling downloads — editor updates and GitHub-hosted release assets.
+  developer_downloads:
+    name: developer_downloads
+    endpoints:
+      - host: update.code.visualstudio.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+      - host: vscode.download.prss.microsoft.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+      - host: release-assets.githubusercontent.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+    binaries:
+      - { path: /usr/bin/curl }
+      - { path: /usr/local/bin/code }
+
   # ── Messaging — pre-allowed for OpenClaw agent notifications ────
   # Restricted to node processes to prevent arbitrary data exfiltration
   # via curl, wget, python, etc. (See: #272)
@@ -212,6 +307,19 @@ network_policies:
         rules:
           - allow: { method: GET, path: "/**" }
           - allow: { method: POST, path: "/**" }
+      - host: gateway.discord.gg
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
+          
+      # WebSocket gateway — must use access: full (CONNECT tunnel) instead
+      # of protocol: rest. The proxy's HTTP idle timeout (~2 min) kills
+      # long-lived WebSocket connections; a CONNECT tunnel avoids
+      # HTTP-level timeouts entirely. Matches presets/discord.yaml. See #409.
       - host: gateway.discord.gg
         port: 443
         access: full

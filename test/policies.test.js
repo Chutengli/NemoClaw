@@ -93,9 +93,9 @@ selectFromList(items, options)
 
 describe("policies", () => {
   describe("listPresets", () => {
-    it("returns all 10 presets", () => {
+    it("returns all 11 presets", () => {
       const presets = policies.listPresets();
-      expect(presets.length).toBe(10);
+      expect(presets.length).toBe(11);
     });
 
     it("each preset has name and description", () => {
@@ -112,8 +112,10 @@ describe("policies", () => {
         .sort();
       const expected = [
         "brave",
+        "developer_downloads",
         "discord",
         "docker",
+        "google",
         "huggingface",
         "jira",
         "npm",
@@ -157,6 +159,16 @@ describe("policies", () => {
       const content = policies.loadPreset("telegram");
       const hosts = policies.getPresetEndpoints(content);
       expect(hosts).toEqual(["api.telegram.org"]);
+    });
+
+    it("extracts hosts from developer_downloads preset", () => {
+      const content = policies.loadPreset("developer_downloads");
+      const hosts = policies.getPresetEndpoints(content);
+      expect(hosts).toEqual([
+        "update.code.visualstudio.com",
+        "vscode.download.prss.microsoft.com",
+        "release-assets.githubusercontent.com",
+      ]);
     });
 
     it("every preset has at least one endpoint", () => {

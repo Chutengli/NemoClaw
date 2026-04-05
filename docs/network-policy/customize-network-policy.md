@@ -103,8 +103,10 @@ Available presets:
 
 | Preset | Endpoints |
 |--------|-----------|
+| `developer_downloads` | VS Code update service and GitHub release assets |
 | `discord` | Discord webhook API |
 | `docker` | Docker Hub, NVIDIA container registry |
+| `google` | Google OAuth, Workspace and Cloud APIs, and downloads |
 | `huggingface` | Hugging Face model registry |
 | `jira` | Atlassian Jira API |
 | `npm` | npm and Yarn registries |
