@@ -24,6 +24,14 @@ network_policies:
       # of protocol: rest. The proxy's HTTP idle timeout (~2 min) kills
       # long-lived WebSocket connections; a CONNECT tunnel avoids
       # HTTP-level timeouts entirely. See #409.
+      - host: channels.discord.dm
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        tls: terminate
+        rules:
+          - allow: { method: GET, path: "/**" }
+          - allow: { method: POST, path: "/**" }
       - host: gateway.discord.gg
         port: 443
         access: full
