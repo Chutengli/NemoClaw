@@ -791,7 +791,7 @@ function buildProviderArgs(action, name, type, credentialEnv, baseUrl) {
  *
  * Attempts `openshell provider create`; if that fails (provider already exists),
  * falls back to `openshell provider update` with the same credential.
- * @param {string} name - Provider name (e.g. "discord-bridge", "inference").
+ * @param {string} name - Provider name (e.g. "discord-channel", "inference").
  * @param {string} type - Provider type ("openai", "anthropic", "generic").
  * @param {string} credentialEnv - Environment variable name for the credential.
  * @param {string|null} baseUrl - Optional base URL for the provider endpoint.
@@ -849,7 +849,7 @@ function upsertMessagingProviders(tokenDefs) {
  * Queries the gateway-level provider registry via `openshell provider get`.
  * Does NOT verify that the provider is attached to a specific sandbox —
  * OpenShell CLI does not currently expose a sandbox-scoped provider query.
- * @param {string} name - Provider name to look up (e.g. "discord-bridge").
+ * @param {string} name - Provider name to look up (e.g. "discord-channel").
  * @returns {boolean} True if the provider exists in the gateway.
  */
 function providerExistsInGateway(name) {
@@ -1085,7 +1085,7 @@ function getSandboxInferenceConfig(model, provider = null, preferredInferenceApi
       primaryModelRef = `openai/${model}`;
       if (requiresStatelessResponsesCompat) {
         inferenceCompat = {
-          supportsStore: true,
+          supportsStore: false,
         };
       }
       break;
@@ -1100,14 +1100,14 @@ function getSandboxInferenceConfig(model, provider = null, preferredInferenceApi
       providerKey = "inference";
       primaryModelRef = `inference/${model}`;
       inferenceCompat = {
-        supportsStore: true,
+        supportsStore: false,
       };
       break;
     case "compatible-endpoint":
       providerKey = "inference";
       primaryModelRef = `inference/${model}`;
       inferenceCompat = {
-        supportsStore: true,
+        supportsStore: false,
       };
       break;
     case "nvidia-prod":
@@ -2298,17 +2298,17 @@ async function createSandbox(
 
   const messagingTokenDefs = [
     {
-      name: `${sandboxName}-discord-bridge`,
+      name: `${sandboxName}-discord-channel`,
       envKey: "DISCORD_BOT_TOKEN",
       token: getMessagingToken("DISCORD_BOT_TOKEN"),
     },
     {
-      name: `${sandboxName}-slack-bridge`,
+      name: `${sandboxName}-slack-channel`,
       envKey: "SLACK_BOT_TOKEN",
       token: getMessagingToken("SLACK_BOT_TOKEN"),
     },
     {
-      name: `${sandboxName}-telegram-bridge`,
+      name: `${sandboxName}-telegram-channel`,
       envKey: "TELEGRAM_BOT_TOKEN",
       token: getMessagingToken("TELEGRAM_BOT_TOKEN"),
     },
@@ -3664,7 +3664,7 @@ async function setupPoliciesWithSelection(sandboxName, options = {}) {
 
   step(8, 8, "Policy presets");
 
-  const suggestions = ["pypi", "npm"];
+  const suggestions = ["pypi", "npm", "discord", "brave", "developer_downloads", "google"];
   if (getCredential("TELEGRAM_BOT_TOKEN")) suggestions.push("telegram");
   if (getCredential("SLACK_BOT_TOKEN") || process.env.SLACK_BOT_TOKEN) suggestions.push("slack");
   if (getCredential("DISCORD_BOT_TOKEN") || process.env.DISCORD_BOT_TOKEN)

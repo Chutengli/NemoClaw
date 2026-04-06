@@ -737,16 +737,11 @@ describe("regression guards", () => {
       expect(findJsViolations(src)).toEqual([]);
     });
 
-    it("discord bridge validates SANDBOX_NAME on startup", () => {
-      const src = fs.readFileSync(path.join(import.meta.dirname, "..", "scripts", "discord-bridge.js"), "utf-8");
-      expect(src.includes("validateName(SANDBOX")).toBeTruthy();
-      expect(!src.includes("execSync")).toBeTruthy();
-    });
-
-    it("discord bridge validates SANDBOX_NAME on startup", () => {
-      const src = fs.readFileSync(path.join(import.meta.dirname, "..", "scripts", "discord-bridge.js"), "utf-8");
-      expect(src.includes("validateName(SANDBOX")).toBeTruthy();
-      expect(!src.includes("execSync")).toBeTruthy();
+    it("start-services no longer launches legacy discord bridge processes", () => {
+      const src = fs.readFileSync(path.join(import.meta.dirname, "..", "scripts", "start-services.sh"), "utf-8");
+      expect(src.includes("discord-bridge")).toBeFalsy();
+      expect(src.includes("telegram-bridge")).toBeFalsy();
+      expect(src.includes("native channels")).toBeTruthy();
     });
   });
 });

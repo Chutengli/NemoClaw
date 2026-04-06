@@ -222,17 +222,17 @@ else
 fi
 
 # M1: Verify Telegram provider exists in gateway
-if openshell provider get "${SANDBOX_NAME}-telegram-bridge" >/dev/null 2>&1; then
-  pass "M1: Provider '${SANDBOX_NAME}-telegram-bridge' exists in gateway"
+if openshell provider get "${SANDBOX_NAME}-telegram-channel" >/dev/null 2>&1; then
+  pass "M1: Provider '${SANDBOX_NAME}-telegram-channel' exists in gateway"
 else
-  fail "M1: Provider '${SANDBOX_NAME}-telegram-bridge' not found in gateway"
+  fail "M1: Provider '${SANDBOX_NAME}-telegram-channel' not found in gateway"
 fi
 
 # M2: Verify Discord provider exists in gateway
-if openshell provider get "${SANDBOX_NAME}-discord-bridge" >/dev/null 2>&1; then
-  pass "M2: Provider '${SANDBOX_NAME}-discord-bridge' exists in gateway"
+if openshell provider get "${SANDBOX_NAME}-discord-channel" >/dev/null 2>&1; then
+  pass "M2: Provider '${SANDBOX_NAME}-discord-channel' exists in gateway"
 else
-  fail "M2: Provider '${SANDBOX_NAME}-discord-bridge' not found in gateway"
+  fail "M2: Provider '${SANDBOX_NAME}-discord-channel' not found in gateway"
 fi
 
 # ══════════════════════════════════════════════════════════════════

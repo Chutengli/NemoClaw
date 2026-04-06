@@ -196,13 +196,13 @@ For a remote Brev instance, SSH to the instance and run `openshell term` there, 
 
 ### `nemoclaw start`
 
-Start auxiliary services, such as the Telegram bridge, Discord bridge, and cloudflared tunnel.
+Start auxiliary services such as the cloudflared tunnel.
 
 ```console
 $ nemoclaw start
 ```
 
-Requires `TELEGRAM_BOT_TOKEN` for Telegram and/or `DISCORD_BOT_TOKEN` for Discord.
+Messaging channels are configured during onboarding and run natively inside OpenClaw when enabled.
 
 ### `nemoclaw stop`
 
